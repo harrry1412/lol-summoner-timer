@@ -29,6 +29,10 @@
   background: #18212e;
 }
 
+.enemy-row + .enemy-row {
+  margin-top: 16px;
+}
+
 .player-label {
   color: #a9b4c4;
   font-size: 14px;
@@ -42,6 +46,8 @@
 .spell-buttons {
   display: flex;
   gap: 16px;
+  width: 288px;
+  max-width: 100%;
 }
 
 .spell-slot {
@@ -71,14 +77,17 @@
 
 .spell-button {
   min-width: 128px;
-  min-height: 80px;
-  padding: 16px 24px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 12px 16px;
   border: 1px solid;
   color: #c4d9ff;
   background: #23334c;
   border-radius: 12px;
   font-size: 20px;
+  line-height: 1.2;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   touch-action: manipulation;
 }
 
@@ -89,9 +98,63 @@
 }
 
 .spell-ignite {
-  color: #ffb19b;
-  background: #352421;
-  border-color: #815144;
+  color: #ffaaa5;
+  background: #451f23;
+  border-color: #a34545;
+}
+
+.spell-barrier {
+  color: #ffe5a3;
+  background: #40331b;
+  border-color: #a58337;
+}
+
+.spell-clarity {
+  color: #9bdfff;
+  background: #19394a;
+  border-color: #3984a8;
+}
+
+.spell-cleanse {
+  color: #b5f3f5;
+  background: #1e3c40;
+  border-color: #52999f;
+}
+
+.spell-exhaust {
+  color: #f3d491;
+  background: #3d301f;
+  border-color: #96733b;
+}
+
+.spell-ghost {
+  color: #a6caff;
+  background: #1c3054;
+  border-color: #467dcc;
+}
+
+.spell-heal {
+  color: #a5efb4;
+  background: #1e3c29;
+  border-color: #489c60;
+}
+
+.spell-mark {
+  color: #e1f4ff;
+  background: #30424f;
+  border-color: #91b5cc;
+}
+
+.spell-smite {
+  color: #ffca91;
+  background: #432c1c;
+  border-color: #af753a;
+}
+
+.spell-teleport {
+  color: #dfb5ff;
+  background: #38234d;
+  border-color: #9659bf;
 }
 
 .spell-button:focus-visible,
@@ -112,8 +175,7 @@
   }
 
   .spell-button {
-    flex: 1;
     min-width: 0;
-    padding: 16px;
+    padding: 12px;
   }
 }

@@ -1,4 +1,5 @@
 ﻿import { useEffect, useState } from 'react'
+import { useId } from 'react'
 import './App.css'
 
 // Base cooldowns from Riot Data Dragon 16.18.1 (Summoner's Rift and ARAM).
@@ -17,6 +18,7 @@ const summonerSpells = [
 ]
 
 function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string }) {
+  const selectId = useId()
   const [spellName, setSpellName] = useState(initialSpell)
   const [endsAt, setEndsAt] = useState<number | null>(null)
   const [secondsLeft, setSecondsLeft] = useState(0)
@@ -45,9 +47,9 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
 
   return (
     <div className="spell-slot">
-      <label htmlFor={`spell-${slot}`}>Spell {slot}</label>
+      <label htmlFor={selectId}>Spell {slot}</label>
       <select
-        id={`spell-${slot}`}
+        id={selectId}
         value={spellName}
         onChange={(event) => {
           setSpellName(event.target.value)
@@ -64,8 +66,9 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
         className={`spell-button spell-${spellName.toLowerCase()}`}
         onClick={startTimer}
         disabled={endsAt !== null}
+        aria-label={endsAt === null ? spellName : `${spellName} ${time} remaining`}
       >
-        {endsAt === null ? spellName : `${spellName} ${time}`}
+        {endsAt === null ? spellName : time}
       </button>
     </div>
   )
@@ -78,16 +81,18 @@ function App() {
 
       <section className="enemy-section" aria-labelledby="enemy-heading">
         <h2 id="enemy-heading">Enemy team</h2>
-        <div className="enemy-row">
-          <div className="champion">
-            <span className="player-label">Enemy 1</span>
-            <h3>Champion name</h3>
+        {['Top', 'Jungle', 'Mid', 'ADC', 'Support'].map((role, index) => (
+          <div className="enemy-row" key={role} role="group" aria-label={`${role} enemy`}>
+            <div className="champion">
+              <span className="player-label">Enemy {index + 1}</span>
+              <h3>{role}</h3>
+            </div>
+            <div className="spell-buttons">
+              <SpellTimer slot={1} initialSpell="Flash" />
+              <SpellTimer slot={2} initialSpell="Ignite" />
+            </div>
           </div>
-          <div className="spell-buttons">
-            <SpellTimer slot={1} initialSpell="Flash" />
-            <SpellTimer slot={2} initialSpell="Ignite" />
-          </div>
-        </div>
+        ))}
         <p className="cooldown-note">
           Base cooldowns for Summoner’s Rift and ARAM. No haste or mode adjustments.
           Smite tracks the 15-second cast cooldown, not charge recovery.
