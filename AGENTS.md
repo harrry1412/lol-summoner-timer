@@ -11,6 +11,7 @@ Make small, focused changes
 Explain important changes after editing
 Run 'npm run lint' after modifying code
 Do not modify unrelated codes
+Read codes before modifying because sometimes the developer would edit codes manully
 Do not run git commands, leave all git operations to the developer
 
 ## Project Goal
