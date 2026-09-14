@@ -123,12 +123,14 @@
   width: 100%;
   min-width: 0;
   aspect-ratio: 4 / 3;
-  padding: 8px 12px;
+  padding: 8px 4px;
   border: 1px solid #54647b;
   border-radius: 8px;
   background: #18212e;
   color: #eef2f8;
   font: inherit;
+  font-size: clamp(12px, calc(var(--control-height) * 0.24), 24px);
+  font-weight: 600;
 }
 
 .spell-button {
@@ -140,7 +142,7 @@
   color: #c4d9ff;
   background: #23334c;
   border-radius: 12px;
-  font-size: 20px;
+  font-size: clamp(14px, calc(var(--control-height) * 0.27), 26px);
   line-height: 1.2;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -242,16 +244,11 @@
     grid-column: 1;
   }
 
-  .spell-slot select {
-    padding: 8px;
-  }
-
   .spell-button {
     grid-column: 2;
     align-self: center;
     min-width: 0;
     padding: 8px;
-    font-size: 18px;
   }
 }
 
