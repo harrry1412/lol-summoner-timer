@@ -1,5 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
 import './App.css'
+import cdBoots from './assets/cdboots.jpg'
+import cdBootsPro from './assets/cdbootspro.png'
 
 // Base cooldowns from Riot Data Dragon 16.18.1 (Summoner's Rift and ARAM).
 const summonerSpells = [
@@ -71,6 +73,22 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
   )
 }
 
+function BootToggle({ image, label }: { image: string; label: string }) {
+  const [active, setActive] = useState(false)
+
+  return (
+    <button
+      type="button"
+      className="boot-toggle"
+      aria-label={label}
+      aria-pressed={active}
+      onClick={() => setActive((previous) => !previous)}
+    >
+      <img src={image} alt="" />
+    </button>
+  )
+}
+
 function App() {
   return (
     <main className="timer-app">
@@ -85,9 +103,15 @@ function App() {
                 {role}
               </h3>
             </div>
-            <div className="spell-buttons">
-              <SpellTimer slot={1} initialSpell="Flash" />
-              <SpellTimer slot={2} initialSpell="Ignite" />
+            <div className="role-controls">
+              <div className="boot-toggles">
+                <BootToggle image={cdBoots} label={`${role} cooldown boots`} />
+                <BootToggle image={cdBootsPro} label={`${role} upgraded cooldown boots`} />
+              </div>
+              <div className="spell-buttons">
+                <SpellTimer slot={1} initialSpell="Flash" />
+                <SpellTimer slot={2} initialSpell="Ignite" />
+              </div>
             </div>
           </div>
         ))}

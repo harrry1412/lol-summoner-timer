@@ -65,10 +65,49 @@
   background-position: -78.4px -6px;
 }
 
+.role-controls {
+  --control-height: min(102px, calc((100vw - 74px) * 3 / 8));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.boot-toggles {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.boot-toggle {
+  width: var(--control-height);
+  height: var(--control-height);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #54647b;
+  border-radius: 8px;
+  background: #18212e;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.boot-toggle img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+}
+
+.boot-toggle[aria-pressed='true'] img {
+  opacity: 1;
+}
+
 .spell-buttons {
   display: flex;
   gap: 16px;
-  width: 288px;
+  width: calc(var(--control-height) * 8 / 3 + 16px);
+  flex-shrink: 0;
   max-width: 100%;
 }
 
@@ -175,14 +214,19 @@
 }
 
 .spell-button:focus-visible,
+.boot-toggle:focus-visible,
 .spell-slot select:focus-visible {
   outline: 3px solid #c4d9ff;
   outline-offset: 4px;
 }
 
 @media (min-width: 601px) {
+  .role-controls {
+    --control-height: clamp(44px, calc((100vw - 260px) * 3 / 22), 91.5px);
+  }
+
   .spell-buttons {
-    width: 520px;
+    width: calc(var(--control-height) * 16 / 3 + 32px);
     gap: 16px;
   }
 
@@ -212,6 +256,10 @@
 }
 
 @media (max-width: 600px) {
+  .role-controls {
+    flex-wrap: wrap;
+  }
+
   .timer-app {
     padding: 20px 16px;
   }
