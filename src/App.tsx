@@ -20,6 +20,14 @@ const summonerSpells = [
   { name: 'Teleport', cooldown: 300 },
 ]
 
+const roleDefaults = [
+  { role: 'Top', secondSpell: 'Ignite' },
+  { role: 'Jungle', secondSpell: 'Smite' },
+  { role: 'Mid', secondSpell: 'Teleport' },
+  { role: 'ADC', secondSpell: 'Barrier' },
+  { role: 'Support', secondSpell: 'Heal' },
+]
+
 function SpellTimer({ slot, initialSpell, summonerHaste, onComplete }: {
   slot: number
   initialSpell: string
@@ -142,7 +150,7 @@ function App() {
       <h1>Summoner Spell Timer</h1>
 
       <section className="enemy-section" aria-label="Enemy team">
-        {['Top', 'Jungle', 'Mid', 'ADC', 'Support'].map((role) => (
+        {roleDefaults.map(({ role, secondSpell }) => (
           <div className="enemy-row" key={role} role="group" aria-label={`${role} enemy`}>
             <div className="champion">
               <h3>
@@ -167,7 +175,7 @@ function App() {
               </div>
               <div className="spell-buttons">
                 <SpellTimer slot={1} initialSpell="Flash" summonerHaste={bootsByRole[role] ?? 0} onComplete={handleCountdownComplete} />
-                <SpellTimer slot={2} initialSpell="Ignite" summonerHaste={bootsByRole[role] ?? 0} onComplete={handleCountdownComplete} />
+                <SpellTimer slot={2} initialSpell={secondSpell} summonerHaste={bootsByRole[role] ?? 0} onComplete={handleCountdownComplete} />
               </div>
             </div>
           </div>
