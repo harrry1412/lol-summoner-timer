@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react'
 import './App.css'
+import { playTimerSound, prepareTimerSound } from './timerSound'
 import cdBoots from './assets/cdboots.jpg'
 import cdBootsPro from './assets/cdbootspro.png'
 
@@ -35,13 +36,18 @@ function SpellTimer({ slot, initialSpell, summonerHaste }: {
       // Use elapsed time so delayed ticks do not lengthen the cooldown.
       const remaining = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000))
       setSecondsLeft(remaining)
-      if (remaining === 0) setEndsAt(null)
+      if (remaining === 0) {
+        window.clearInterval(intervalId)
+        setEndsAt(null)
+        playTimerSound()
+      }
     }, 250)
 
     return () => window.clearInterval(intervalId)
   }, [endsAt])
 
   function startTimer() {
+    prepareTimerSound()
     // Smite's cast lockout is fixed; haste only affects its charge recovery.
     const duration = spell.name === 'Smite'
       ? spell.cooldown
@@ -52,6 +58,7 @@ function SpellTimer({ slot, initialSpell, summonerHaste }: {
   }
 
   const time = `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`
+  const isEndingSoon = endsAt !== null && secondsLeft > 0 && secondsLeft <= 5
 
   return (
     <div className="spell-slot">
@@ -70,7 +77,7 @@ function SpellTimer({ slot, initialSpell, summonerHaste }: {
       </select>
       <button
         type="button"
-        className={`spell-button spell-${spellName.toLowerCase()}`}
+        className={`spell-button spell-${spellName.toLowerCase()}${isEndingSoon ? ' spell-ending-soon' : ''}`}
         onClick={startTimer}
         aria-label={endsAt === null ? spellName : `${spellName} ${time} remaining, click to restart`}
       >

@@ -149,6 +149,24 @@
   touch-action: manipulation;
 }
 
+.spell-ending-soon {
+  animation: spell-countdown-blink 1s ease-in-out infinite;
+}
+
+@keyframes spell-countdown-blink {
+  50% {
+    filter: brightness(1.7);
+    box-shadow: inset 0 0 0 3px currentColor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spell-ending-soon {
+    animation: none;
+    box-shadow: inset 0 0 0 3px currentColor;
+  }
+}
+
 .spell-flash {
   color: #f8dc86;
   background: #332d1e;
