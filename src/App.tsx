@@ -18,7 +18,11 @@ const summonerSpells = [
   { name: 'Teleport', cooldown: 300 },
 ]
 
-function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string }) {
+function SpellTimer({ slot, initialSpell, summonerHaste }: {
+  slot: number
+  initialSpell: string
+  summonerHaste: number
+}) {
   const [spellName, setSpellName] = useState(initialSpell)
   const [endsAt, setEndsAt] = useState<number | null>(null)
   const [secondsLeft, setSecondsLeft] = useState(0)
@@ -38,9 +42,13 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
   }, [endsAt])
 
   function startTimer() {
-    if (endsAt !== null) return
-    setSecondsLeft(spell.cooldown)
-    setEndsAt(Date.now() + spell.cooldown * 1000)
+    // Smite's cast lockout is fixed; haste only affects its charge recovery.
+    const duration = spell.name === 'Smite'
+      ? spell.cooldown
+      : spell.cooldown / (1 + summonerHaste / 100)
+    // Snapshot haste on cast so changing boots leaves active timers intact.
+    setSecondsLeft(Math.ceil(duration))
+    setEndsAt(Date.now() + duration * 1000)
   }
 
   const time = `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`
@@ -64,8 +72,7 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
         type="button"
         className={`spell-button spell-${spellName.toLowerCase()}`}
         onClick={startTimer}
-        disabled={endsAt !== null}
-        aria-label={endsAt === null ? spellName : `${spellName} ${time} remaining`}
+        aria-label={endsAt === null ? spellName : `${spellName} ${time} remaining, click to restart`}
       >
         {endsAt === null ? spellName : time}
       </button>
@@ -73,16 +80,19 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
   )
 }
 
-function BootToggle({ image, label }: { image: string; label: string }) {
-  const [active, setActive] = useState(false)
-
+function BootToggle({ image, label, active, onToggle }: {
+  image: string
+  label: string
+  active: boolean
+  onToggle: () => void
+}) {
   return (
     <button
       type="button"
       className="boot-toggle"
       aria-label={label}
       aria-pressed={active}
-      onClick={() => setActive((previous) => !previous)}
+      onClick={onToggle}
     >
       <img src={image} alt="" />
     </button>
@@ -90,6 +100,16 @@ function BootToggle({ image, label }: { image: string; label: string }) {
 }
 
 function App() {
+  // Ionian Boots: 10 summoner haste; Crimson Lucidity: 20 (Riot patch 26.1).
+  const [bootsByRole, setBootsByRole] = useState<Record<string, number>>({})
+
+  function toggleBoots(role: string, haste: number) {
+    setBootsByRole((previous) => ({
+      ...previous,
+      [role]: previous[role] === haste ? 0 : haste,
+    }))
+  }
+
   return (
     <main className="timer-app">
       <h1>Summoner Spell Timer</h1>
@@ -105,12 +125,22 @@ function App() {
             </div>
             <div className="role-controls">
               <div className="boot-toggles">
-                <BootToggle image={cdBoots} label={`${role} cooldown boots`} />
-                <BootToggle image={cdBootsPro} label={`${role} upgraded cooldown boots`} />
+                <BootToggle
+                  image={cdBoots}
+                  label={`${role} Ionian Boots of Lucidity: 10 summoner haste`}
+                  active={bootsByRole[role] === 10}
+                  onToggle={() => toggleBoots(role, 10)}
+                />
+                <BootToggle
+                  image={cdBootsPro}
+                  label={`${role} Crimson Lucidity: 20 summoner haste`}
+                  active={bootsByRole[role] === 20}
+                  onToggle={() => toggleBoots(role, 20)}
+                />
               </div>
               <div className="spell-buttons">
-                <SpellTimer slot={1} initialSpell="Flash" />
-                <SpellTimer slot={2} initialSpell="Ignite" />
+                <SpellTimer slot={1} initialSpell="Flash" summonerHaste={bootsByRole[role] ?? 0} />
+                <SpellTimer slot={2} initialSpell="Ignite" summonerHaste={bootsByRole[role] ?? 0} />
               </div>
             </div>
           </div>
