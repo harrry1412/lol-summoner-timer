@@ -1,5 +1,4 @@
 ﻿import { useEffect, useState } from 'react'
-import { useId } from 'react'
 import './App.css'
 
 // Base cooldowns from Riot Data Dragon 16.18.1 (Summoner's Rift and ARAM).
@@ -18,7 +17,6 @@ const summonerSpells = [
 ]
 
 function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string }) {
-  const selectId = useId()
   const [spellName, setSpellName] = useState(initialSpell)
   const [endsAt, setEndsAt] = useState<number | null>(null)
   const [secondsLeft, setSecondsLeft] = useState(0)
@@ -47,9 +45,8 @@ function SpellTimer({ slot, initialSpell }: { slot: number; initialSpell: string
 
   return (
     <div className="spell-slot">
-      <label htmlFor={selectId}>Spell {slot}</label>
       <select
-        id={selectId}
+        aria-label={`Spell ${slot}`}
         value={spellName}
         onChange={(event) => {
           setSpellName(event.target.value)
@@ -79,13 +76,14 @@ function App() {
     <main className="timer-app">
       <h1>Summoner Spell Timer</h1>
 
-      <section className="enemy-section" aria-labelledby="enemy-heading">
-        <h2 id="enemy-heading">Enemy team</h2>
-        {['Top', 'Jungle', 'Mid', 'ADC', 'Support'].map((role, index) => (
+      <section className="enemy-section" aria-label="Enemy team">
+        {['Top', 'Jungle', 'Mid', 'ADC', 'Support'].map((role) => (
           <div className="enemy-row" key={role} role="group" aria-label={`${role} enemy`}>
             <div className="champion">
-              <span className="player-label">Enemy {index + 1}</span>
-              <h3>{role}</h3>
+              <h3>
+                <span className={`role-icon role-icon-${role.toLowerCase()}`} aria-hidden="true" />
+                {role}
+              </h3>
             </div>
             <div className="spell-buttons">
               <SpellTimer slot={1} initialSpell="Flash" />
@@ -93,11 +91,6 @@ function App() {
             </div>
           </div>
         ))}
-        <p className="cooldown-note">
-          Base cooldowns for Summoner’s Rift and ARAM. No haste or mode adjustments.
-          Smite tracks the 15-second cast cooldown, not charge recovery.
-          Changing a spell resets its timer.
-        </p>
       </section>
     </main>
   )

@@ -11,13 +11,6 @@
   line-height: 1.2;
 }
 
-.enemy-section h2 {
-  margin: 0 0 10px;
-  color: #a9b4c4;
-  font-size: 18px;
-  font-weight: 500;
-}
-
 .enemy-row {
   display: flex;
   align-items: center;
@@ -33,14 +26,43 @@
   margin-top: 8px;
 }
 
-.player-label {
-  color: #a9b4c4;
-  font-size: 14px;
+.champion h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 20px;
 }
 
-.champion h3 {
-  margin: 6px 0 0;
-  font-size: 20px;
+/* Crop each role from the 1020 × 231 sprite at one-fifth size. */
+.role-icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-image: url('./assets/roles.png');
+  background-repeat: no-repeat;
+  background-size: 204px 46.2px;
+}
+
+.role-icon-top {
+  background-position: -166.8px -7.2px;
+}
+
+.role-icon-jungle {
+  background-position: -4px -7.2px;
+}
+
+.role-icon-mid {
+  background-position: -124px -7.2px;
+}
+
+.role-icon-adc {
+  background-position: -40px -7.2px;
+}
+
+.role-icon-support {
+  background-position: -78.4px -6px;
 }
 
 .spell-buttons {
@@ -58,15 +80,10 @@
   min-width: 0;
 }
 
-.spell-slot label,
-.cooldown-note {
-  color: #a9b4c4;
-  font-size: 14px;
-}
-
 .spell-slot select {
   width: 100%;
-  min-height: 48px;
+  min-width: 0;
+  aspect-ratio: 4 / 3;
   padding: 8px 12px;
   border: 1px solid #54647b;
   border-radius: 8px;
@@ -163,11 +180,6 @@
   outline-offset: 4px;
 }
 
-.cooldown-note {
-  margin: 10px 0 0;
-  font-size: 12px;
-}
-
 @media (min-width: 601px) {
   .spell-buttons {
     width: 520px;
@@ -176,13 +188,12 @@
 
   .spell-slot {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 112px;
-    grid-template-rows: auto 48px;
-    gap: 4px 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    align-items: center;
     align-content: center;
   }
 
-  .spell-slot label,
   .spell-slot select {
     grid-column: 1;
   }
@@ -193,7 +204,6 @@
 
   .spell-button {
     grid-column: 2;
-    grid-row: 1 / 3;
     align-self: center;
     min-width: 0;
     padding: 8px;
