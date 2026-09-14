@@ -42,7 +42,6 @@ function SpellTimer({ slot, initialSpell, summonerHaste, onComplete }: {
         window.clearInterval(intervalId)
         setEndsAt(null)
         onComplete()
-        playTimerSound()
       }
     }, 250)
 
@@ -114,6 +113,7 @@ function App() {
   const [flashSequence, setFlashSequence] = useState(0)
   const handleCountdownComplete = useCallback(() => {
     setPendingFlashes((pending) => pending + 1)
+    playTimerSound()
   }, [])
 
   // Ionian Boots: 10 summoner haste; Crimson Lucidity: 20 (Riot patch 26.1).
