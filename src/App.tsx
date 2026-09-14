@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react'
 import './App.css'
+import { useCallback } from 'react'
 import { playTimerSound, prepareTimerSound } from './timerSound'
 import cdBoots from './assets/cdboots.jpg'
 import cdBootsPro from './assets/cdbootspro.png'
@@ -19,10 +20,11 @@ const summonerSpells = [
   { name: 'Teleport', cooldown: 300 },
 ]
 
-function SpellTimer({ slot, initialSpell, summonerHaste }: {
+function SpellTimer({ slot, initialSpell, summonerHaste, onComplete }: {
   slot: number
   initialSpell: string
   summonerHaste: number
+  onComplete: () => void
 }) {
   const [spellName, setSpellName] = useState(initialSpell)
   const [endsAt, setEndsAt] = useState<number | null>(null)
@@ -39,12 +41,13 @@ function SpellTimer({ slot, initialSpell, summonerHaste }: {
       if (remaining === 0) {
         window.clearInterval(intervalId)
         setEndsAt(null)
+        onComplete()
         playTimerSound()
       }
     }, 250)
 
     return () => window.clearInterval(intervalId)
-  }, [endsAt])
+  }, [endsAt, onComplete])
 
   function startTimer() {
     prepareTimerSound()
@@ -107,6 +110,12 @@ function BootToggle({ image, label, active, onToggle }: {
 }
 
 function App() {
+  const [pendingFlashes, setPendingFlashes] = useState(0)
+  const [flashSequence, setFlashSequence] = useState(0)
+  const handleCountdownComplete = useCallback(() => {
+    setPendingFlashes((pending) => pending + 1)
+  }, [])
+
   // Ionian Boots: 10 summoner haste; Crimson Lucidity: 20 (Riot patch 26.1).
   const [bootsByRole, setBootsByRole] = useState<Record<string, number>>({})
 
@@ -119,6 +128,17 @@ function App() {
 
   return (
     <main className="timer-app">
+      {pendingFlashes > 0 && (
+        <div
+          key={flashSequence}
+          className="completion-flash"
+          aria-hidden="true"
+          onAnimationEnd={() => {
+            setPendingFlashes((pending) => pending - 1)
+            setFlashSequence((sequence) => sequence + 1)
+          }}
+        />
+      )}
       <h1>Summoner Spell Timer</h1>
 
       <section className="enemy-section" aria-label="Enemy team">
@@ -146,8 +166,8 @@ function App() {
                 />
               </div>
               <div className="spell-buttons">
-                <SpellTimer slot={1} initialSpell="Flash" summonerHaste={bootsByRole[role] ?? 0} />
-                <SpellTimer slot={2} initialSpell="Ignite" summonerHaste={bootsByRole[role] ?? 0} />
+                <SpellTimer slot={1} initialSpell="Flash" summonerHaste={bootsByRole[role] ?? 0} onComplete={handleCountdownComplete} />
+                <SpellTimer slot={2} initialSpell="Ignite" summonerHaste={bootsByRole[role] ?? 0} onComplete={handleCountdownComplete} />
               </div>
             </div>
           </div>

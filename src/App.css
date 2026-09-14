@@ -5,6 +5,21 @@
   padding: 20px 24px;
 }
 
+.completion-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  background: #ffd700;
+  opacity: 0;
+  animation: completion-flash 1.6s ease-in-out;
+}
+
+@keyframes completion-flash {
+  0%, 50%, 100% { opacity: 0; }
+  20%, 70% { opacity: 0.3; }
+}
+
 .timer-app h1 {
   margin: 0 0 12px;
   font-size: 24px;
